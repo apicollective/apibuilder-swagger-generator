@@ -11,7 +11,6 @@ describe('apidoc-swagger-generator', function() {
       it('should correctly parse ' + path, function() {
         serviceDoc = JSON.parse(fs.readFileSync(serviceSourceDir + '/' + path).toString());
         return translateServiceJson(serviceDoc, function(swaggerDoc) {
-          console.log(JSON.stringify(swaggerDoc));
           const swaggerExpectedDoc = JSON.parse(fs.readFileSync(swaggerSourceDir + '/' + path).toString());
           assert.deepEqual(swaggerDoc, swaggerExpectedDoc);
         });

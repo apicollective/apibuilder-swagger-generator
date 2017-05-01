@@ -38,7 +38,7 @@
 				}
 			}
 		},
-		"/users/:guid": {
+		"/users/{guid}": {
 			"get": {
 				"parameters": [{
 					"name": "guid",

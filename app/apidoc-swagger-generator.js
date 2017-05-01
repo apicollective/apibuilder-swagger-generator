@@ -178,9 +178,10 @@ function toPaths(resources, service) {
       var operation = resource.operations[j];
       var parameters = toParameters(operation.parameters);
       var bodyParameter = toBodyParameter(operation.body, service);
+      var path = operation.path.replace(/(:([^/]+))/g, '{$2}');
       if (bodyParameter) parameters.push(bodyParameter);
-      if (resourcePaths[operation.path] === undefined) resourcePaths[operation.path] = {};
-      resourcePaths[operation.path][operation.method.toLowerCase()] = addSwaggerPassThrough({
+      if (resourcePaths[path] === undefined) resourcePaths[path] = {};
+      resourcePaths[path][operation.method.toLowerCase()] = addSwaggerPassThrough({
         "description": operation.description,
         "parameters": parameters,
         "responses": toResponses(operation.responses, service),
