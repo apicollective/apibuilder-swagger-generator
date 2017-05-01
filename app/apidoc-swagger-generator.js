@@ -215,6 +215,8 @@ function addSwaggerPassThrough(swaggerDoc, apiDocObj) {
 
 function toSwagger(service) {
   var url = !service.base_url || service.base_url.trim() === "" ? {} : Url.parse(service.base_url);
+  var schemes = [(url.protocol || '').replace(/:$/, '')];
+  if ((schemes.length == 1 && schemes[0] === '') || schemes.length == 0) schemes = null;
   return addSwaggerPassThrough({
     "swagger": "2.0",
     "info": {
@@ -226,7 +228,7 @@ function toSwagger(service) {
     },
     "host": url.host,
     "basePath": url.pathname,
-    "schemes": [(url.protocol || '').replace(/:$/, '')],
+    "schemes": schemes,
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": toPaths(service.resources, service),
