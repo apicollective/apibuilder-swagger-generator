@@ -1,0 +1,410 @@
+{
+  "headers": [],
+  "version": "0.0.1-dev",
+  "organization": {
+    "key": "bryzek"
+  },
+  "imports": [],
+  "enums": [],
+  "resources": [
+    {
+      "plural": "Pets",
+      "type": "Pet",
+      "path": null,
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "operations": [
+        {
+          "responses": [
+            {
+              "type": "[Pet]",
+              "description": "pet response",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets",
+          "body": null,
+          "method": "GET",
+          "description": "Returns all pets from the system that the user has access to",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "tags to filter by\n\nCollection Format: $f",
+              "deprecation": null,
+              "name": "tags",
+              "required": false
+            },
+            {
+              "type": "integer",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "maximum number of results to return",
+              "deprecation": null,
+              "name": "limit",
+              "required": false
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "Pet",
+              "description": "pet response",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets",
+          "body": {
+            "type": "NewPet",
+            "description": "Pet to add to the store",
+            "deprecation": null,
+            "attributes": []
+          },
+          "method": "POST",
+          "description": "Creates a new pet in the store.  Duplicates are allowed",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": []
+        },
+        {
+          "responses": [
+            {
+              "type": "[Pet]",
+              "description": "pet response",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets",
+          "body": null,
+          "method": "GET",
+          "description": "Returns all pets from the system that the user has access to",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "tags to filter by\n\nCollection Format: $f",
+              "deprecation": null,
+              "name": "tags",
+              "required": false
+            },
+            {
+              "type": "integer",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "maximum number of results to return",
+              "deprecation": null,
+              "name": "limit",
+              "required": false
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "Pet",
+              "description": "pet response",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets",
+          "body": {
+            "type": "NewPet",
+            "description": "Pet to add to the store",
+            "deprecation": null,
+            "attributes": []
+          },
+          "method": "POST",
+          "description": "Creates a new pet in the store.  Duplicates are allowed",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": []
+        },
+        {
+          "responses": [
+            {
+              "type": "Pet",
+              "description": "pet response",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets/:id",
+          "body": null,
+          "method": "GET",
+          "description": "Returns a user based on a single ID, if the user does not have access to the pet",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "long",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": null,
+              "description": "ID of pet to fetch",
+              "deprecation": null,
+              "name": "id",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "pet deleted",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "ErrorModel",
+              "description": "unexpected error",
+              "deprecation": null,
+              "code": {
+                "response_code_option": "Default"
+              }
+            }
+          ],
+          "path": "/pets/:id",
+          "body": null,
+          "method": "DELETE",
+          "description": "deletes a single pet based on the ID supplied",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "long",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": null,
+              "description": "ID of pet to delete",
+              "deprecation": null,
+              "name": "id",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "application": {
+    "key": "swagger-petstore"
+  },
+  "unions": [],
+  "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
+  "apidoc": {
+    "version": "0.11.54"
+  },
+  "models": [
+    {
+      "plural": "NewPets",
+      "fields": [
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "name",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "tag",
+          "required": false
+        }
+      ],
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "NewPet"
+    },
+    {
+      "plural": "Pets",
+      "fields": [
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "name",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "tag",
+          "required": false
+        },
+        {
+          "type": "long",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "id",
+          "required": true
+        }
+      ],
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "Pet"
+    },
+    {
+      "plural": "ErrorModels",
+      "fields": [
+        {
+          "type": "integer",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "code",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "message",
+          "required": true
+        }
+      ],
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "ErrorModel"
+    }
+  ],
+  "base_url": "http://petstore.swagger.io/api",
+  "attributes": [],
+  "name": "Swagger Petstore",
+  "info": {
+    "license": null,
+    "contact": null
+  },
+  "namespace": "com.bryzek.swagger.petstore.v0"
+}

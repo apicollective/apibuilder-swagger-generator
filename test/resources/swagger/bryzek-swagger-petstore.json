@@ -1,0 +1,182 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "Swagger Petstore",
+		"description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
+		"version": "0.0.1-dev"
+	},
+	"host": "petstore.swagger.io",
+	"basePath": "/api",
+	"schemes": ["http"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/pets": {
+			"get": {
+				"description": "Returns a user based on a single ID, if the user does not have access to the pet",
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "ID of pet to fetch",
+					"required": true,
+					"format": "int64",
+					"type": "integer",
+					"default": null,
+					"maximum": null,
+					"minimum": null
+				}],
+				"responses": {
+					"200": {
+						"description": "pet response",
+						"schema": {
+							"$ref": "#/definitions/Pet"
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"schema": {
+							"$ref": "#/definitions/ErrorModel"
+						}
+					}
+				}
+			},
+			"post": {
+				"description": "Creates a new pet in the store.  Duplicates are allowed",
+				"parameters": [{
+					"name": "NewPet",
+					"in": "body",
+					"description": "Pet to add to the store",
+					"schema": {
+						"$ref": "#/definitions/NewPet"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "pet response",
+						"schema": {
+							"$ref": "#/definitions/Pet"
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"schema": {
+							"$ref": "#/definitions/ErrorModel"
+						}
+					}
+				}
+			},
+			"delete": {
+				"description": "deletes a single pet based on the ID supplied",
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "ID of pet to delete",
+					"required": true,
+					"format": "int64",
+					"type": "integer",
+					"default": null,
+					"maximum": null,
+					"minimum": null
+				}],
+				"responses": {
+					"204": {
+						"description": "pet deleted",
+						"schema": {
+							"$ref": "#/definitions/unit"
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"schema": {
+							"$ref": "#/definitions/ErrorModel"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"NewPet": {
+			"type": "object",
+			"description": null,
+			"title": "NewPet",
+			"required": ["name"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"tag": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				}
+			}
+		},
+		"Pet": {
+			"type": "object",
+			"description": null,
+			"title": "Pet",
+			"required": ["name", "id"],
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"tag": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"id": {
+					"type": "integer",
+					"format": "int64",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				}
+			}
+		},
+		"ErrorModel": {
+			"type": "object",
+			"description": null,
+			"title": "ErrorModel",
+			"required": ["code", "message"],
+			"properties": {
+				"code": {
+					"type": "integer",
+					"format": "int32",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"message": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				}
+			}
+		}
+	}
+}
