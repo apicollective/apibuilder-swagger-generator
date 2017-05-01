@@ -1,0 +1,290 @@
+{
+  "headers": [],
+  "version": "0.3.46",
+  "organization": {
+    "key": "bryzek"
+  },
+  "imports": [],
+  "enums": [
+    {
+      "plural": "bars",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "values": [
+        {
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "b"
+        }
+      ],
+      "name": "bar"
+    },
+    {
+      "plural": "foos",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "values": [
+        {
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "a"
+        }
+      ],
+      "name": "foo"
+    }
+  ],
+  "resources": [
+    {
+      "plural": "users",
+      "type": "user",
+      "path": "/users",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "operations": [
+        {
+          "responses": [
+            {
+              "type": "[user]",
+              "description": null,
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            }
+          ],
+          "path": "/users",
+          "body": null,
+          "method": "GET",
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "parameters": []
+        },
+        {
+          "responses": [
+            {
+              "type": "user",
+              "description": null,
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": null,
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 404
+                }
+              }
+            }
+          ],
+          "path": "/users/:guid",
+          "body": null,
+          "method": "GET",
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "uuid",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": null,
+              "description": null,
+              "deprecation": null,
+              "name": "guid",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "user",
+              "description": null,
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 201
+                }
+              }
+            }
+          ],
+          "path": "/users",
+          "body": {
+            "type": "user",
+            "description": null,
+            "deprecation": null,
+            "attributes": []
+          },
+          "method": "POST",
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "parameters": []
+        }
+      ]
+    }
+  ],
+  "application": {
+    "key": "apidoc-example-union-types"
+  },
+  "unions": [
+    {
+      "types": [
+        {
+          "type": "foo",
+          "description": null,
+          "deprecation": null,
+          "attributes": []
+        },
+        {
+          "type": "bar",
+          "description": null,
+          "deprecation": null,
+          "attributes": []
+        }
+      ],
+      "plural": "foobars",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "foobar",
+      "discriminator": null
+    },
+    {
+      "types": [
+        {
+          "type": "registered_user",
+          "description": null,
+          "deprecation": null,
+          "attributes": []
+        },
+        {
+          "type": "guest_user",
+          "description": null,
+          "deprecation": null,
+          "attributes": []
+        },
+        {
+          "type": "uuid",
+          "description": null,
+          "deprecation": null,
+          "attributes": []
+        }
+      ],
+      "plural": "users",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "user",
+      "discriminator": null
+    }
+  ],
+  "description": null,
+  "apidoc": {
+    "version": "0.11.54"
+  },
+  "models": [
+    {
+      "plural": "guest_users",
+      "fields": [
+        {
+          "type": "uuid",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": "Internal unique identifier for this user.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "guid",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "email",
+          "required": true
+        }
+      ],
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "guest_user"
+    },
+    {
+      "plural": "registered_users",
+      "fields": [
+        {
+          "type": "uuid",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": "Internal unique identifier for this user.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "guid",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "email",
+          "required": true
+        },
+        {
+          "type": "foobar",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": null,
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "preference",
+          "required": true
+        }
+      ],
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "name": "registered_user"
+    }
+  ],
+  "base_url": null,
+  "attributes": [],
+  "name": "apidoc-example-union-types",
+  "info": {
+    "license": null,
+    "contact": null
+  },
+  "namespace": "com.bryzek.apidoc.example.union.types.v0"
+}

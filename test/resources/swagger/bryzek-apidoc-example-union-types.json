@@ -1,0 +1,142 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "apidoc-example-union-types",
+		"description": null,
+		"version": "0.3.46"
+	},
+	"schemes": [""],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/users": {
+			"get": {
+				"description": null,
+				"parameters": [{
+					"name": "guid",
+					"in": "path",
+					"description": null,
+					"required": true,
+					"format": "uuid",
+					"type": "string",
+					"default": null,
+					"maximum": null,
+					"minimum": null
+				}],
+				"responses": {
+					"200": {
+						"description": null,
+						"schema": {
+							"$ref": "#/definitions/user"
+						}
+					},
+					"404": {
+						"description": null,
+						"schema": {
+							"$ref": "#/definitions/unit"
+						}
+					}
+				}
+			},
+			"post": {
+				"description": null,
+				"parameters": [{
+					"name": "user",
+					"in": "body",
+					"description": null,
+					"schema": {
+						"$ref": "#/definitions/user"
+					}
+				}],
+				"responses": {
+					"201": {
+						"description": null,
+						"schema": {
+							"$ref": "#/definitions/user"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"guest_user": {
+			"type": "object",
+			"description": null,
+			"title": "guest_user",
+			"required": ["guid", "email"],
+			"properties": {
+				"guid": {
+					"type": "string",
+					"format": "uuid",
+					"description": "Internal unique identifier for this user.",
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"email": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				}
+			}
+		},
+		"registered_user": {
+			"type": "object",
+			"description": null,
+			"title": "registered_user",
+			"required": ["guid", "email", "preference"],
+			"properties": {
+				"guid": {
+					"type": "string",
+					"format": "uuid",
+					"description": "Internal unique identifier for this user.",
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"email": {
+					"type": "string",
+					"description": null,
+					"default": null,
+					"maximum": null,
+					"minimum": null,
+					"example": null
+				},
+				"preference": {
+					"$ref": "#/definitions/foobar"
+				}
+			}
+		},
+		"foobar": {
+			"type": "object",
+			"description": null,
+			"title": "foobar",
+			"allOf": [{
+				"type": "string",
+				"enum": ["a"]
+			}, {
+				"type": "string",
+				"enum": ["b"]
+			}]
+		},
+		"user": {
+			"type": "object",
+			"description": null,
+			"title": "user",
+			"allOf": [{
+				"$ref": "#/definitions/registered_user"
+			}, {
+				"$ref": "#/definitions/guest_user"
+			}, {
+				"type": "string",
+				"format": "uuid"
+			}]
+		}
+	}
+}
