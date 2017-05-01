@@ -4,6 +4,7 @@ exports.handler = (event, context, callback) => {
   const body = JSON.parse(event.body),
     service = body.service;
   var swagger = toSwagger(service);
+  removeNulls(swagger);
   doResponse(swagger, context);
 };
 
@@ -246,3 +247,11 @@ function doResponse(response, context) {
     })
   });
 }
+
+function removeNulls(obj) {
+  Object.keys(obj).forEach(function(key) {
+    (obj[key] && typeof obj[key] === 'object') && removeNulls(obj[key]) ||
+    (obj[key] === null) && delete obj[key]
+  });
+  return obj;
+};

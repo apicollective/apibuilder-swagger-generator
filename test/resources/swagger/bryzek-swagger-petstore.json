@@ -20,10 +20,7 @@
 					"description": "ID of pet to fetch",
 					"required": true,
 					"format": "int64",
-					"type": "integer",
-					"default": null,
-					"maximum": null,
-					"minimum": null
+					"type": "integer"
 				}],
 				"responses": {
 					"200": {
@@ -73,10 +70,7 @@
 					"description": "ID of pet to delete",
 					"required": true,
 					"format": "int64",
-					"type": "integer",
-					"default": null,
-					"maximum": null,
-					"minimum": null
+					"type": "integer"
 				}],
 				"responses": {
 					"204": {
@@ -98,83 +92,45 @@
 	"definitions": {
 		"NewPet": {
 			"type": "object",
-			"description": null,
 			"title": "NewPet",
 			"required": ["name"],
 			"properties": {
 				"name": {
-					"type": "string",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"type": "string"
 				},
 				"tag": {
-					"type": "string",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"type": "string"
 				}
 			}
 		},
 		"Pet": {
 			"type": "object",
-			"description": null,
 			"title": "Pet",
 			"required": ["name", "id"],
 			"properties": {
 				"name": {
-					"type": "string",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"type": "string"
 				},
 				"tag": {
-					"type": "string",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"type": "string"
 				},
 				"id": {
 					"type": "integer",
-					"format": "int64",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"format": "int64"
 				}
 			}
 		},
 		"ErrorModel": {
 			"type": "object",
-			"description": null,
 			"title": "ErrorModel",
 			"required": ["code", "message"],
 			"properties": {
 				"code": {
 					"type": "integer",
-					"format": "int32",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"format": "int32"
 				},
 				"message": {
-					"type": "string",
-					"description": null,
-					"default": null,
-					"maximum": null,
-					"minimum": null,
-					"example": null
+					"type": "string"
 				}
 			}
 		}
