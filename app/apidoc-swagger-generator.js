@@ -67,6 +67,8 @@ function toDefinitionOrEnum(type, service) {
       "type": "string",
       "enum": foundEnum.values.map(function(enm) { return enm.name; })
     };
+  } else if (type == "unit") {
+    return null;
   } else {
     return { "$ref": "#/definitions/" + type };
   }
@@ -144,7 +146,7 @@ function toTypeAndFormat(type) {
     case "string":
       return { "type": "string" };
     case "unit":
-      return { "type": "string" };
+      return { };
     case "uuid":
       return { "type": "string", "format": "uuid" };
   }
