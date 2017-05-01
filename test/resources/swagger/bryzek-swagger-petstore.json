@@ -13,20 +13,29 @@
 	"paths": {
 		"/pets": {
 			"get": {
-				"description": "Returns a user based on a single ID, if the user does not have access to the pet",
+				"description": "Returns all pets from the system that the user has access to",
 				"parameters": [{
-					"name": "id",
-					"in": "path",
-					"description": "ID of pet to fetch",
-					"required": true,
-					"format": "int64",
+					"name": "tags",
+					"in": "query",
+					"description": "tags to filter by\n\nCollection Format: $f",
+					"required": false,
+					"type": "string"
+				}, {
+					"name": "limit",
+					"in": "query",
+					"description": "maximum number of results to return",
+					"required": false,
+					"format": "int32",
 					"type": "integer"
 				}],
 				"responses": {
 					"200": {
 						"description": "pet response",
 						"schema": {
-							"$ref": "#/definitions/Pet"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Pet"
+							}
 						}
 					},
 					"default": {
@@ -46,6 +55,33 @@
 					"schema": {
 						"$ref": "#/definitions/NewPet"
 					}
+				}],
+				"responses": {
+					"200": {
+						"description": "pet response",
+						"schema": {
+							"$ref": "#/definitions/Pet"
+						}
+					},
+					"default": {
+						"description": "unexpected error",
+						"schema": {
+							"$ref": "#/definitions/ErrorModel"
+						}
+					}
+				}
+			}
+		},
+		"/pets/:id": {
+			"get": {
+				"description": "Returns a user based on a single ID, if the user does not have access to the pet",
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "ID of pet to fetch",
+					"required": true,
+					"format": "int64",
+					"type": "integer"
 				}],
 				"responses": {
 					"200": {

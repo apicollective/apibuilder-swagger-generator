@@ -173,19 +173,20 @@ function toPaths(resources, service) {
   var paths = {};
   for (var i = 0; i < resources.length; i++) {
     var resource = resources[i];
-    var operations = {};
+    var resourcePaths = {};
     for (var j = 0; j < resource.operations.length; j++) {
       var operation = resource.operations[j];
       var parameters = toParameters(operation.parameters);
       var bodyParameter = toBodyParameter(operation.body, service);
       if (bodyParameter) parameters.push(bodyParameter);
-      operations[operation.method.toLowerCase()] = addSwaggerPassThrough({
+      if (resourcePaths[operation.path] === undefined) resourcePaths[operation.path] = {};
+      resourcePaths[operation.path][operation.method.toLowerCase()] = addSwaggerPassThrough({
         "description": operation.description,
         "parameters": parameters,
         "responses": toResponses(operation.responses, service),
       }, operation);
     }
-    paths[resource.path || resource.operations[0].path] = addSwaggerPassThrough(operations, resource);
+    Object.keys(resourcePaths).forEach(function(path) { paths[path] = addSwaggerPassThrough(resourcePaths[path], resource); });
   }
   return addSwaggerPassThrough(paths, resources);
 }

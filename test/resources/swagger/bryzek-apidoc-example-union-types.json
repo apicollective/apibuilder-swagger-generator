@@ -9,20 +9,16 @@
 	"paths": {
 		"/users": {
 			"get": {
-				"parameters": [{
-					"name": "guid",
-					"in": "path",
-					"required": true,
-					"format": "uuid",
-					"type": "string"
-				}],
+				"parameters": [],
 				"responses": {
 					"200": {
 						"schema": {
-							"$ref": "#/definitions/user"
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/user"
+							}
 						}
-					},
-					"404": {}
+					}
 				}
 			},
 			"post": {
@@ -39,6 +35,25 @@
 							"$ref": "#/definitions/user"
 						}
 					}
+				}
+			}
+		},
+		"/users/:guid": {
+			"get": {
+				"parameters": [{
+					"name": "guid",
+					"in": "path",
+					"required": true,
+					"format": "uuid",
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"schema": {
+							"$ref": "#/definitions/user"
+						}
+					},
+					"404": {}
 				}
 			}
 		}
