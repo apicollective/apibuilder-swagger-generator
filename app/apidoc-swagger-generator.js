@@ -197,8 +197,9 @@ function toResponses(responses, service) {
   for (var i = 0; i < responses.length; i++) {
     var response = responses[i];
     var code = response.code.integer ? response.code.integer.value : response.code.response_code_option.toLowerCase();
+    // Note: Response.description is required in Swagger, but not in Apidoc - thus the `|| code + " response"` below.
     result[code] = addSwaggerPassThrough({
-      "description": response.description,
+      "description": response.description || code + " response",
       "schema": toDefinitionSchema(response.type, service)
     }, response);
   }
