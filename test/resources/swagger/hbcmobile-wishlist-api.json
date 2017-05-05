@@ -853,7 +853,6 @@
 			"type": "object",
 			"description": "The form to update the name of a wishlist.",
 			"title": "wishlist_form",
-			"required": [],
 			"properties": {
 				"name": {
 					"description": "The (human readable) name of the wishlist.",

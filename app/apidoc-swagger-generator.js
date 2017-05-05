@@ -121,11 +121,13 @@ function toProperty(field, service) {
 }
 
 function toSchema(model, service) {
+  var required = model.fields.filter(function(field) { return field.required || field.required === undefined; }).map(function(field) { return field.name; });
+  if (required.length == 0) required = null;
   var schema = {
     "type": "object",
     "description": model.description,
     "title": model.name,
-    "required": model.fields.filter(function(field) { return field.required || field.required === undefined; }).map(function(field) { return field.name; }),
+    "required": required,
     "properties": {}
   };
   for (var i = 0; i < model.fields.length; i++) {
