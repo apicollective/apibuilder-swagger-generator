@@ -75,14 +75,14 @@ function toDefinitionOrEnum(type, service) {
 }
 
 function toDefinitionSchema(type, service) {
-  var arrayType = type.match(/^\s*\[\s*(.+)\s*\]\s*$/);
-  if (arrayType) {
+  var arrayType = unwindArray(type);
+  if (arrayType.isArray) {
     return {
       "type": "array",
-      "items": toDefinitionOrEnum(arrayType[1], service)
+      "items": toDefinitionOrEnum(arrayType.type, service)
     }
   } else {
-    return toDefinitionOrEnum(type, service);
+    return toDefinitionOrEnum(arrayType.type, service);
   }
 }
 
@@ -92,6 +92,21 @@ function toLicense(license) {
       "name": license.name,
       "url": license.url
     }, license);
+  }
+}
+
+function toProperty(field, service) {
+  var dataType = toTypeAndFormat(field.type);
+  if (dataType) {
+    return concat({
+      "description": field.description,
+      "default": field.default,
+      "maximum": field.maximum,
+      "minimum": field.minimum,
+      "example": field.example
+    }, dataType);
+  } else {
+    return toDefinitionSchema(field.type, service);
   }
 }
 
@@ -105,67 +120,71 @@ function toSchema(model, service) {
   };
   for (var i = 0; i < model.fields.length; i++) {
     var field = model.fields[i];
-    var property = undefined;
-    var dataType = toTypeAndFormat(field.type);
-    if (dataType) {
-      property = {
-        "type": dataType.type,
-        "format": dataType.format,
-        "description": field.description,
-        "default": field.default,
-        "maximum": field.maximum,
-        "minimum": field.minimum,
-        "example": field.example
-      }
-    } else {
-      property = toDefinitionSchema(field.type, service);
-    }
-    schema.properties[field.name] = addSwaggerPassThrough(property, field);
+    schema.properties[field.name] = addSwaggerPassThrough(toProperty(field, service), field);
   }
   return addSwaggerPassThrough(schema, model);
 }
 
 function toTypeAndFormat(type) {
-  switch (type) {
+  var result = null;
+  var arrayType = unwindArray(type);
+  switch (arrayType.type) {
     case "boolean":
-      return { "type": "boolean" };
+      result = { "type": "boolean" };
+      break;
     case "date-iso8601":
-      return { "type": "string", "format": "date" };
+      result = { "type": "string", "format": "date" };
+      break;
     case "date-time-iso8601":
-      return { "type": "string", "format": "date-time" };
+      result = { "type": "string", "format": "date-time" };
+      break;
     case "decimal":
-      return { "type": "number", "format": "float" };
+      result = { "type": "number", "format": "float" };
+      break;
     case "double":
-      return { "type": "number", "format": "double" };
+      result = { "type": "number", "format": "double" };
+      break;
     case "integer":
-      return { "type": "integer", "format": "int32" };
+      result = { "type": "integer", "format": "int32" };
+      break;
     case "long":
-      return { "type": "integer", "format": "int64" };
+      result = { "type": "integer", "format": "int64" };
+      break;
     case "object":
-      return { };
+      result = { };
+      break;
     case "string":
-      return { "type": "string" };
+      result = { "type": "string" };
+      break;
     case "unit":
-      return { };
+      result = { };
+      break;
     case "uuid":
-      return { "type": "string", "format": "uuid" };
+      result = { "type": "string", "format": "uuid" };
+      break;
+  }
+  if (arrayType.isArray && result) {
+    return {
+      "type": "array",
+      "items": result
+    };
+  } else {
+    return result;
   }
 }
 
 function toParameters(parameters) {
   return parameters.map(function(parameter) {
     var dataType = toTypeAndFormat(parameter.type);
-    return addSwaggerPassThrough({
+    return addSwaggerPassThrough(concat({
       "name": parameter.name,
       "in": parameter.location.toLowerCase(),
       "description": parameter.description,
       "required": parameter.required,
-      "format": dataType.format,
-      "type": dataType.type,
       "default": parameter.default,
       "maximum": parameter.maximum,
       "minimum": parameter.minimum
-    }, parameter)
+    }, dataType), parameter)
   });
 }
 
@@ -210,7 +229,7 @@ function addSwaggerPassThrough(swaggerDoc, apiDocObj) {
   if (apiDocObj.attributes) {
     var swaggerAttr = apiDocObj.attributes.find(function(attr) { return attr.name == 'swagger' });
     if (swaggerAttr) {
-      return Object.assign({}, swaggerAttr.value, swaggerDoc);
+      return concat(swaggerAttr.value, swaggerDoc);
     }
   }
   return swaggerDoc;
@@ -235,8 +254,28 @@ function toSwagger(service) {
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": toPaths(service.resources, service),
-    "definitions": Object.assign(toDefinitions(service.models, service), toDefinitionsFromUnions(service.unions, service))
+    "definitions": concat(toDefinitions(service.models, service), toDefinitionsFromUnions(service.unions, service))
   }, service);
+}
+
+// object2 will override collisions from object1
+function concat(object1, object2) {
+  return Object.assign({}, object1, object2);
+}
+
+function unwindArray(type) {
+  var arrayType = type.match(/^\s*\[\s*(.+)\s*\]\s*$/);
+  if (arrayType) {
+    return {
+      isArray: true,
+      type: arrayType[1]
+    }
+  } else {
+    return {
+      isArray: false,
+      type: type
+    }
+  }
 }
 
 function doResponse(response, context) {
