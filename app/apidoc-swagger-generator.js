@@ -86,6 +86,16 @@ function toDefinitionSchema(type, service) {
   }
 }
 
+function toHeaders(headers, service) {
+  if (headers) {
+    var result = {};
+    headers.forEach(function(header) {
+      result[header.name] = addSwaggerPassThrough(toProperty(header, service), header);
+    });
+    return result;
+  }
+}
+
 function toLicense(license) {
   if (license) {
     return addSwaggerPassThrough({
@@ -216,10 +226,13 @@ function toResponses(responses, service) {
   for (var i = 0; i < responses.length; i++) {
     var response = responses[i];
     var code = response.code.integer ? response.code.integer.value : response.code.response_code_option.toLowerCase();
+    var headers = toHeaders(concat(service.headers, response.headers));
+    if (Object.keys(headers).length == 0) headers = null;
     // Note: Response.description is required in Swagger, but not in Apidoc - thus the `|| code + " response"` below.
     result[code] = addSwaggerPassThrough({
       "description": response.description || code + " response",
-      "schema": toDefinitionSchema(response.type, service)
+      "schema": toDefinitionSchema(response.type, service),
+      "headers": headers
     }, response);
   }
   return addSwaggerPassThrough(result, responses);
@@ -260,6 +273,8 @@ function toSwagger(service) {
 
 // object2 will override collisions from object1
 function concat(object1, object2) {
+  if (!object1) return object2;
+  if (!object2) return object1;
   return Object.assign({}, object1, object2);
 }
 

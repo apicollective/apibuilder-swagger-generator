@@ -1,0 +1,866 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "wishlist-api",
+		"description": "A universal wishlist model",
+		"contact": {
+			"name": "HBC Mobile Team",
+			"email": "hbc-mobile@gilt.com"
+		},
+		"version": "1.4.0"
+	},
+	"host": "wishlist-api.saks-mobile.giltaws.com",
+	"basePath": "/",
+	"schemes": ["https"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/_internal_/healthcheck": {
+			"get": {
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "200 response",
+						"schema": {
+							"$ref": "#/definitions/com.hbc.mobile.common.models.v0.models.healthcheck"
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/organizations/{orgId}/wishlists/{listGuid}": {
+			"get": {
+				"description": "Get all items of an anonymous wishlist.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "listGuid",
+					"in": "path",
+					"description": "The globally unique guid of the wishlist.",
+					"required": true,
+					"type": "string",
+					"format": "uuid"
+				}, {
+					"name": "filter",
+					"in": "query",
+					"description": "List of item ids to use as a filter for the returned list. The filter must not contain more than 100 ids.",
+					"required": false,
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}, {
+					"name": "limit",
+					"in": "query",
+					"description": "The number of records to return.",
+					"required": true,
+					"default": "25",
+					"maximum": 100,
+					"minimum": 1,
+					"type": "integer",
+					"format": "int64"
+				}, {
+					"name": "offset",
+					"in": "query",
+					"description": "Used to paginate. First page of results is 0.",
+					"required": true,
+					"default": "0",
+					"minimum": 0,
+					"type": "integer",
+					"format": "int64"
+				}],
+				"responses": {
+					"200": {
+						"description": "All items on the wishlist.",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/item"
+							}
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"head": {
+				"description": "Get the size of an anonymous wishlist.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "listGuid",
+					"in": "path",
+					"description": "The globally unique guid of the wishlist.",
+					"required": true,
+					"type": "string",
+					"format": "uuid"
+				}],
+				"responses": {
+					"204": {
+						"description": "Successful response, returning the size of the wishlist (see header)",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/organizations/{orgId}/accounts/{accountId}/wishlists": {
+			"get": {
+				"description": "Get all wishlists for an account.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "limit",
+					"in": "query",
+					"description": "The number of records to return.",
+					"required": true,
+					"default": "25",
+					"maximum": 100,
+					"minimum": 1,
+					"type": "integer",
+					"format": "int64"
+				}, {
+					"name": "offset",
+					"in": "query",
+					"description": "Used to paginate. First page of results is 0.",
+					"required": true,
+					"default": "0",
+					"minimum": 0,
+					"type": "integer",
+					"format": "int64"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "All wishlists in the account.",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/wishlist"
+							}
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/organizations/{orgId}/accounts/{accountId}/wishlists/{listKey}": {
+			"put": {
+				"description": "Updates, sets or unsets a wishlist name.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "wishlist_form",
+					"in": "body",
+					"description": "The update form.",
+					"schema": {
+						"$ref": "#/definitions/wishlist_form"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "The updated wishlist.",
+						"schema": {
+							"$ref": "#/definitions/wishlist"
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"description": "Deletes a wishlist.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"204": {
+						"description": "The operation was successful.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/organizations/{orgId}/accounts/{accountId}/wishlists/{listKey}/items": {
+			"get": {
+				"description": "Get all items on a wishlist.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "filter",
+					"in": "query",
+					"description": "List of item ids to use as a filter for the returned list. The filter must not contain more than 100 ids.",
+					"required": false,
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}, {
+					"name": "limit",
+					"in": "query",
+					"description": "The number of records to return.",
+					"required": true,
+					"default": "25",
+					"maximum": 100,
+					"minimum": 1,
+					"type": "integer",
+					"format": "int64"
+				}, {
+					"name": "offset",
+					"in": "query",
+					"description": "Used to paginate. First page of results is 0.",
+					"required": true,
+					"default": "0",
+					"minimum": 0,
+					"type": "integer",
+					"format": "int64"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "All wishlisted items on the wishlist.",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/item"
+							}
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"description": "Bulk-update items on a wishlist.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "[item]",
+					"in": "body",
+					"description": "List of items to update. Items with state=wishlisted will be added, items with state=unlisted will be removed from the wishlist.",
+					"schema": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/item"
+						}
+					}
+				}],
+				"responses": {
+					"204": {
+						"description": "The update was successful.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "The body or any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/organizations/{orgId}/accounts/{accountId}/wishlists/{listKey}/items/{itemId}": {
+			"get": {
+				"description": "Get a single wishlist item by id.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "itemId",
+					"in": "path",
+					"description": "The id of the wishlist item to retrieve. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "The (wishlisted or unlisted) wishlist item.",
+						"schema": {
+							"$ref": "#/definitions/item"
+						},
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"description": "Set a wishlist item.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "itemId",
+					"in": "path",
+					"description": "The id of the item. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"204": {
+						"description": "The operation was successful.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"description": "Unset a wishlist item.",
+				"parameters": [{
+					"name": "orgId",
+					"in": "path",
+					"description": "The id of the organization.",
+					"required": true
+				}, {
+					"name": "accountId",
+					"in": "path",
+					"description": "The id of the account. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "listKey",
+					"in": "path",
+					"description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "itemId",
+					"in": "path",
+					"description": "The id of the item. Maximum 18 characters.",
+					"required": true,
+					"type": "string"
+				}, {
+					"name": "X-Authentication-Token",
+					"in": "header",
+					"description": "Authenticates the client and decides which organizations can be accessed.",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"204": {
+						"description": "The operation was successful.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"400": {
+						"description": "Any of the parameters are invalid/malformed.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"403": {
+						"description": "The organization does not exist or the caller is not authorized to access it.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "All other errors.",
+						"headers": {
+							"X-Request-Id": {
+								"description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"item": {
+			"type": "object",
+			"description": "The representation of an item on a wishlist.",
+			"title": "item",
+			"required": ["id", "state"],
+			"properties": {
+				"id": {
+					"description": "The unique identifier of the item. Maximum 18 characters.",
+					"example": "4294904415",
+					"type": "string"
+				},
+				"state": {
+					"type": "string",
+					"enum": ["wishlisted", "unlisted"]
+				}
+			}
+		},
+		"wishlist": {
+			"type": "object",
+			"description": "The representation of a wishlist.",
+			"title": "wishlist",
+			"required": ["key", "guid", "size"],
+			"properties": {
+				"key": {
+					"description": "The account-unique (private) key of the wishlist. Maximum 18 characters.",
+					"example": "default",
+					"type": "string"
+				},
+				"guid": {
+					"description": "The globally unique public guid of the wishlist.",
+					"example": "ce41002f-1fa1-463e-bce4-531de3ef1643",
+					"type": "string",
+					"format": "uuid"
+				},
+				"size": {
+					"description": "The number of items on the list.",
+					"example": "0",
+					"type": "integer",
+					"format": "int32"
+				},
+				"name": {
+					"description": "The (human readable) name of the wishlist.",
+					"example": "Donald's great list. It's amazing. Really.",
+					"type": "string"
+				}
+			}
+		},
+		"wishlist_form": {
+			"type": "object",
+			"description": "The form to update the name of a wishlist.",
+			"title": "wishlist_form",
+			"required": [],
+			"properties": {
+				"name": {
+					"description": "The (human readable) name of the wishlist.",
+					"example": "Donald's great list. It's amazing. Really.",
+					"type": "string"
+				}
+			}
+		}
+	}
+}

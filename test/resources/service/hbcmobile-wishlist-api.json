@@ -1,0 +1,1328 @@
+{
+  "headers": [
+    {
+      "type": "string",
+      "default": null,
+      "description": "Response header returned by all operations. Identifies the server-side request id of the call.",
+      "deprecation": null,
+      "attributes": [],
+      "name": "X-Request-Id",
+      "required": true
+    }
+  ],
+  "version": "1.4.0",
+  "organization": {
+    "key": "hbcmobile"
+  },
+  "imports": [
+    {
+      "version": "0.0.1",
+      "organization": {
+        "key": "hbcmobile"
+      },
+      "enums": [
+        "organization"
+      ],
+      "application": {
+        "key": "common-models"
+      },
+      "unions": [],
+      "models": [
+        "healthcheck"
+      ],
+      "uri": "http://www.apidoc.me/hbcmobile/common-models/latest/service.json",
+      "namespace": "com.hbc.mobile.common.models.v0"
+    }
+  ],
+  "enums": [
+    {
+      "plural": "item_states",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "values": [
+        {
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "wishlisted"
+        },
+        {
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "name": "unlisted"
+        }
+      ],
+      "name": "item_state"
+    }
+  ],
+  "resources": [
+    {
+      "plural": "healthchecks",
+      "type": "com.hbc.mobile.common.models.v0.models.healthcheck",
+      "path": "/_internal_/healthcheck",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "operations": [
+        {
+          "responses": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.models.healthcheck",
+              "description": null,
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            }
+          ],
+          "path": "/_internal_/healthcheck",
+          "body": null,
+          "method": "GET",
+          "description": null,
+          "deprecation": null,
+          "attributes": [],
+          "parameters": []
+        }
+      ]
+    },
+    {
+      "plural": "items",
+      "type": "item",
+      "path": "/organizations/:orgId/wishlists/:listGuid",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "operations": [
+        {
+          "responses": [
+            {
+              "type": "[item]",
+              "description": "All items on the wishlist.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/wishlists/:listGuid",
+          "body": null,
+          "method": "GET",
+          "description": "Get all items of an anonymous wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "uuid",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "ce41002f-1fa1-463e-bce4-531de3ef1643",
+              "description": "The globally unique guid of the wishlist.",
+              "deprecation": null,
+              "name": "listGuid",
+              "required": true
+            },
+            {
+              "type": "[string]",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "List of item ids to use as a filter for the returned list. The filter must not contain more than 100 ids.",
+              "deprecation": null,
+              "name": "filter",
+              "required": false
+            },
+            {
+              "type": "long",
+              "minimum": 1,
+              "default": "25",
+              "maximum": 100,
+              "location": "Query",
+              "example": null,
+              "description": "The number of records to return.",
+              "deprecation": null,
+              "name": "limit",
+              "required": true
+            },
+            {
+              "type": "long",
+              "minimum": 0,
+              "default": "0",
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "Used to paginate. First page of results is 0.",
+              "deprecation": null,
+              "name": "offset",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "Successful response, returning the size of the wishlist (see header)",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/wishlists/:listGuid",
+          "body": null,
+          "method": "HEAD",
+          "description": "Get the size of an anonymous wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "uuid",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "ce41002f-1fa1-463e-bce4-531de3ef1643",
+              "description": "The globally unique guid of the wishlist.",
+              "deprecation": null,
+              "name": "listGuid",
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "plural": "wishlists",
+      "type": "wishlist",
+      "path": "/organizations/:orgId/accounts/:accountId/wishlists",
+      "description": null,
+      "deprecation": null,
+      "attributes": [],
+      "operations": [
+        {
+          "responses": [
+            {
+              "type": "[wishlist]",
+              "description": "All wishlists in the account.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists",
+          "body": null,
+          "method": "GET",
+          "description": "Get all wishlists for an account.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "long",
+              "minimum": 1,
+              "default": "25",
+              "maximum": 100,
+              "location": "Query",
+              "example": null,
+              "description": "The number of records to return.",
+              "deprecation": null,
+              "name": "limit",
+              "required": true
+            },
+            {
+              "type": "long",
+              "minimum": 0,
+              "default": "0",
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "Used to paginate. First page of results is 0.",
+              "deprecation": null,
+              "name": "offset",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "wishlist",
+              "description": "The updated wishlist.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey",
+          "body": {
+            "type": "wishlist_form",
+            "description": "The update form.",
+            "deprecation": null,
+            "attributes": []
+          },
+          "method": "PUT",
+          "description": "Updates, sets or unsets a wishlist name.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "The operation was successful.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey",
+          "body": null,
+          "method": "DELETE",
+          "description": "Deletes a wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "[item]",
+              "description": "All wishlisted items on the wishlist.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey/items",
+          "body": null,
+          "method": "GET",
+          "description": "Get all items on a wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "[string]",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "List of item ids to use as a filter for the returned list. The filter must not contain more than 100 ids.",
+              "deprecation": null,
+              "name": "filter",
+              "required": false
+            },
+            {
+              "type": "long",
+              "minimum": 1,
+              "default": "25",
+              "maximum": 100,
+              "location": "Query",
+              "example": null,
+              "description": "The number of records to return.",
+              "deprecation": null,
+              "name": "limit",
+              "required": true
+            },
+            {
+              "type": "long",
+              "minimum": 0,
+              "default": "0",
+              "maximum": null,
+              "location": "Query",
+              "example": null,
+              "description": "Used to paginate. First page of results is 0.",
+              "deprecation": null,
+              "name": "offset",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "The update was successful.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The body or any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey/items",
+          "body": {
+            "type": "[item]",
+            "description": "List of items to update. Items with state=wishlisted will be added, items with state=unlisted will be removed from the wishlist.",
+            "deprecation": null,
+            "attributes": []
+          },
+          "method": "PATCH",
+          "description": "Bulk-update items on a wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "item",
+              "description": "The (wishlisted or unlisted) wishlist item.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 200
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey/items/:itemId",
+          "body": null,
+          "method": "GET",
+          "description": "Get a single wishlist item by id.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "4294904411",
+              "description": "The id of the wishlist item to retrieve. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "itemId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "The operation was successful.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey/items/:itemId",
+          "body": null,
+          "method": "PUT",
+          "description": "Set a wishlist item.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "4294904411",
+              "description": "The id of the item. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "itemId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        },
+        {
+          "responses": [
+            {
+              "type": "unit",
+              "description": "The operation was successful.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 204
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "Any of the parameters are invalid/malformed.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 400
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "The organization does not exist or the caller is not authorized to access it.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 403
+                }
+              }
+            },
+            {
+              "type": "unit",
+              "description": "All other errors.",
+              "deprecation": null,
+              "code": {
+                "integer": {
+                  "value": 500
+                }
+              }
+            }
+          ],
+          "path": "/organizations/:orgId/accounts/:accountId/wishlists/:listKey/items/:itemId",
+          "body": null,
+          "method": "DELETE",
+          "description": "Unset a wishlist item.",
+          "deprecation": null,
+          "attributes": [],
+          "parameters": [
+            {
+              "type": "com.hbc.mobile.common.models.v0.enums.organization",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "saks",
+              "description": "The id of the organization.",
+              "deprecation": null,
+              "name": "orgId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "456789abcdef",
+              "description": "The id of the account. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "accountId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "default",
+              "description": "The account-specific (private) key of the wishlist. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "listKey",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Path",
+              "example": "4294904411",
+              "description": "The id of the item. Maximum 18 characters.",
+              "deprecation": null,
+              "name": "itemId",
+              "required": true
+            },
+            {
+              "type": "string",
+              "minimum": null,
+              "default": null,
+              "maximum": null,
+              "location": "Header",
+              "example": null,
+              "description": "Authenticates the client and decides which organizations can be accessed.",
+              "deprecation": null,
+              "name": "X-Authentication-Token",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "application": {
+    "key": "wishlist-api"
+  },
+  "unions": [],
+  "description": "A universal wishlist model",
+  "apidoc": {
+    "version": "0.11.48"
+  },
+  "models": [
+    {
+      "plural": "items",
+      "fields": [
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "4294904415",
+          "description": "The unique identifier of the item. Maximum 18 characters.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "id",
+          "required": true
+        },
+        {
+          "type": "item_state",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "wishlisted",
+          "description": "State of the item, whether or not it is wishlisted.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "state",
+          "required": true
+        }
+      ],
+      "description": "The representation of an item on a wishlist.",
+      "deprecation": null,
+      "attributes": [],
+      "name": "item"
+    },
+    {
+      "plural": "wishlists",
+      "fields": [
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "default",
+          "description": "The account-unique (private) key of the wishlist. Maximum 18 characters.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "key",
+          "required": true
+        },
+        {
+          "type": "uuid",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "ce41002f-1fa1-463e-bce4-531de3ef1643",
+          "description": "The globally unique public guid of the wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "guid",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "0",
+          "description": "The number of items on the list.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "size",
+          "required": true
+        },
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "Donald's great list. It's amazing. Really.",
+          "description": "The (human readable) name of the wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "name",
+          "required": false
+        }
+      ],
+      "description": "The representation of a wishlist.",
+      "deprecation": null,
+      "attributes": [],
+      "name": "wishlist"
+    },
+    {
+      "plural": "wishlist_forms",
+      "fields": [
+        {
+          "type": "string",
+          "minimum": null,
+          "default": null,
+          "maximum": null,
+          "example": "Donald's great list. It's amazing. Really.",
+          "description": "The (human readable) name of the wishlist.",
+          "deprecation": null,
+          "attributes": [],
+          "name": "name",
+          "required": false
+        }
+      ],
+      "description": "The form to update the name of a wishlist.",
+      "deprecation": null,
+      "attributes": [],
+      "name": "wishlist_form"
+    }
+  ],
+  "base_url": "https://wishlist-api.saks-mobile.giltaws.com",
+  "attributes": [],
+  "name": "wishlist-api",
+  "info": {
+    "license": null,
+    "contact": {
+      "url": null,
+      "email": "hbc-mobile@gilt.com",
+      "name": "HBC Mobile Team"
+    }
+  },
+  "namespace": "com.hbc.mobile.wishlist.api.v1"
+}

@@ -1,5 +1,5 @@
 #!/bin/bash
-testApis=( "bryzek swagger-petstore" "bryzek apidoc-example-union-types")
+testApis=( "bryzek swagger-petstore" "bryzek apidoc-example-union-types" "hbcmobile wishlist-api")
 
 for orgAndService in "${testApis[@]}"
 do
