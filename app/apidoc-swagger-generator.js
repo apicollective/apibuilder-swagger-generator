@@ -227,7 +227,7 @@ function toResponses(responses, service) {
   var result = {};
   for (var i = 0; i < responses.length; i++) {
     var response = responses[i];
-    var code = response.code.integer ? response.code.integer.value : response.code.response_code_option.toLowerCase();
+    var code = response.code.response_code ? response.code.response_code.value : response.code.response_code_option.toLowerCase();
     var headers = toHeaders(concat(service.headers, response.headers));
     if (Object.keys(headers).length == 0) headers = null;
     // Note: Response.description is required in Swagger, but not in Apidoc - thus the `|| code + " response"` below.
