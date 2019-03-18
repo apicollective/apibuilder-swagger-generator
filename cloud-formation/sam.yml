@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'ApiBuilder code generator deployment'
+Parameters:
+  Env:
+    Description: The environment name.
+    Type: String
+    Default: dev
+Resources:
+  GeneratorsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Environment:
+        Variables:
+          ENV: !Ref Env
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: '/generators/{key}'
+            Method: get
+        GetAll:
+          Type: Api
+          Properties:
+            Path: '/generators'
+            Method: get
+      FunctionName: !Sub '${AWS::StackName}-generators'
+      Handler: app/handlers.generatorsHandler
+      Runtime: nodejs6.10
+  HealthCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Environment:
+        Variables:
+          ENV: !Ref Env
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: '/_internal_/healthcheck'
+            Method: get
+      FunctionName: !Sub '${AWS::StackName}-healthcheck'
+      Handler: app/handlers.healthCheckHandler
+      Runtime: nodejs6.10
+  InvocationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../
+      Environment:
+        Variables:
+          ENV: !Ref Env
+      Events:
+        Get:
+          Type: Api
+          Properties:
+            Path: '/invocations/{key}'
+            Method: post
+      FunctionName: !Sub '${AWS::StackName}-invocations'
+      Handler: app/handlers.invocationsHandler
+      Runtime: nodejs6.10
+      Timeout: 20
+  GeneratorsFunctionLogRetention:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${GeneratorsFunction}'
+      RetentionInDays: 7
+  HealthCheckFunctionLogRetention:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${HealthCheckFunction}'
+      RetentionInDays: 7
+  InvocationsFunctionLogRetention:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${InvocationsFunction}'
+      RetentionInDays: 7

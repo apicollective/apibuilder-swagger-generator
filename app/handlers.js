@@ -1,6 +1,30 @@
 const Url = require('url');
 
-exports.handler = (event, context, callback) => {
+exports.generatorsHandler = function(event, context, callback) {
+  try {
+    const key = event.pathParameters ? event.pathParameters.key : null
+    if (key !== 'swagger') {
+      callback(null, { statusCode: 404 })
+    } else {
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify({
+          "name": "Swagger",
+          "description": "Swagger 2.0 Export of the API spec",
+        }) 
+      })
+    }
+  } catch (e) {
+    console.error(e)
+    callback(e)
+  }
+}
+
+exports.healthCheckHandler = function(event, context, callback) {
+  callback(null, { statusCode: 200, body: JSON.stringify({ status: 'healthy' }) })
+}
+
+exports.invocationsHandler = (event, context, callback) => {
   const body = JSON.parse(event.body),
     service = body.service;
   var swagger = toSwagger(service);
@@ -230,7 +254,7 @@ function toResponses(responses, service) {
     var code = response.code.integer ? response.code.integer.value : response.code.response_code_option.toLowerCase();
     var headers = toHeaders(concat(service.headers, response.headers));
     if (Object.keys(headers).length == 0) headers = null;
-    // Note: Response.description is required in Swagger, but not in Apidoc - thus the `|| code + " response"` below.
+    // Note: Response.description is required in Swagger, but not in Apibuilder - thus the `|| code + " response"` below.
     result[code] = addSwaggerPassThrough({
       "description": response.description || code + " response",
       "schema": toDefinitionSchema(response.type, service),

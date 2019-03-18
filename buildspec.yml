@@ -1,0 +1,22 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - sudo apt-get update -y && sudo apt-get install -y make apt-transport-https
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - sudo apt-get update -y && sudo apt-get install -y yarn
+      - yarn install --prod
+      - find ./node_modules -mtime +10950 -exec touch {} \;
+      - aws cloudformation package
+          --template-file ./cloud-formation/sam.yml
+          --s3-bucket com.getbright.packages
+          --s3-prefix apibuilder-code-generator
+          --output-template-file sam-packaged.yml
+      - echo "{\"Parameters\":{\"Env\":\"$ENV\"}}" > sam-packaged-config.json
+artifacts:
+  type: zip
+  files:
+    - ./cloud-formation/sam.yml
+    - sam-packaged.yml
+    - sam-packaged-config.json

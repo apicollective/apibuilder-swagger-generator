@@ -1,8 +1,8 @@
 {
-  "name": "apidoc-swagger-generator",
+  "name": "apibuilder-swagger-generator",
   "version": "0.0.1",
-  "description": "A Lambda function that translates from the Apidoc service.json to a JSON document that adheres to Swagger Spec 2.0",
-  "main": "app/apidoc-swagger-generator.js",
+  "description": "A Lambda function that translates from the Apibuilder service.json to a JSON document that adheres to Swagger Spec 2.0",
+  "main": "app/handlers.js",
   "directories": {
     "test": "test"
   },
@@ -11,19 +11,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mbryzek/apidoc-swagger-generator"
+    "url": "https://github.com/apicollective/apibuilder-swagger-generator"
   },
   "keywords": [
-    "apidoc",
+    "apibuilder",
     "swagger"
   ],
   "author": "Ryan Martin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mbryzek/apidoc-swagger-generator/issues"
+    "url": "https://github.com/apicollective/apibuilder-swagger-generator/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "aws-lambda-mock-context": "^1.1.0",
     "mocha": "^2.4.5"

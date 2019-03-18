@@ -1,0 +1,416 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Lambda Pipeline for CI/CD
+Parameters:
+  Env:
+    Description: The environment name.
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - stage
+      - prod
+  SubEnv:
+    Description: The sub-environment name (used mostly for different dev stacks).
+    Type: String
+    AllowedPattern: "^[a-zA-Z0-9]*$"
+  GitHubBranch:
+    Description: The GitHub branch to trigger off of.
+    Type: String
+    Default: master
+  GitHubRepo:
+    Description: The GitHub repo where the code is hosted.
+    Type: String
+  GitHubRepoOwner:
+    Description: The owning account name for GitHub repo where the code is hosted.
+    Type: String
+  GitHubToken:
+    Description: The GitHub token to access the repo.
+    Type: String
+  PackagedTemplateConfigPath:
+    Description: The packaged SAM template config as created by buildspec.yml.
+    Type: String
+  PackagedTemplatePath:
+    Description: The packaged SAM template as created by buildspec.yml.
+    Type: String
+  CustomCFTemplate:
+    Description: A custom CloudFormation template to execute at the end of the pipeline.
+    Type: String
+    Default: ''
+  CustomCFTemplateConfig:
+    Description: A custom CloudFormation template to execute at the end of the pipeline.
+    Type: String
+    Default: ''
+Conditions:
+  HasCustom: !Not [!Equals [!Ref CustomCFTemplate, '']]
+  HasCustomConfig: !Not [!Equals [!Ref CustomCFTemplateConfig, '']]
+Resources:
+  BuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildTrustPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Effect: Allow
+                Resource:
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AWS::StackName}'
+                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AWS::StackName}:*'
+              - Action:
+                - s3:PutObject
+                - s3:GetObject
+                - s3:GetObjectVersion
+                Effect: Allow
+                Resource: !Sub 'arn:aws:s3:::codepipeline-${AWS::Region}-*'
+              - Action:
+                - ssm:GetParameters
+                Effect: Allow
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/CodeBuild/*'
+              - Action:
+                - s3:PutObject
+                Effect: Allow
+                Resource: arn:aws:s3:::*/*
+  CloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+      Policies:
+        - PolicyName: CloudFormationTrustPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                - s3:GetObject
+                - s3:GetObjectVersion
+                - s3:GetBucketVersioning
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - s3:PutObject
+                Effect: Allow
+                Resource: arn:aws:s3:::codepipeline*
+              - Action:
+                - lambda:*
+                Effect: Allow
+                Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
+              - Action:
+                - apigateway:*
+                Effect: Allow
+                Resource: !Sub 'arn:aws:apigateway:${AWS::Region}::*'
+              - Action:
+                - iam:GetRole
+                - iam:CreateRole
+                - iam:DeleteRole
+                - iam:PutRolePolicy
+                Effect: Allow
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/*'
+              - Action:
+                - iam:AttachRolePolicy
+                - iam:DeleteRolePolicy
+                - iam:DetachRolePolicy
+                Effect: Allow
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/*'
+              - Action:
+                - iam:PassRole
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - cloudformation:CreateChangeSet
+                Effect: Allow
+                Resource: !Sub 'arn:aws:cloudformation:${AWS::Region}:aws:transform/Serverless-2016-10-31'
+              - Action:
+                - codedeploy:CreateApplication
+                - codedeploy:DeleteApplication
+                - codedeploy:RegisterApplicationRevision
+                Effect: Allow
+                Resource: !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:application:*'
+              - Action:
+                - codedeploy:CreateDeploymentGroup
+                - codedeploy:CreateDeployment
+                - codedeploy:GetDeployment
+                Effect: Allow
+                Resource: !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:*'
+              - Action:
+                - codedeploy:GetDeploymentConfig
+                Effect: Allow
+                Resource: !Sub 'arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentconfig:*'
+              - Action:
+                - events:*
+                Effect: Allow
+                Resource: '*'
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelineTrustPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                - s3:GetObject
+                - s3:GetObjectVersion
+                - s3:GetBucketVersioning
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - s3:PutObject
+                Effect: Allow
+                Resource:
+                  - arn:aws:s3:::codepipeline*
+                  - arn:aws:s3:::elasticbeanstalk*
+              - Action:
+                - codecommit:CancelUploadArchive
+                - codecommit:GetBranch
+                - codecommit:GetCommit
+                - codecommit:GetUploadArchiveStatus
+                - codecommit:UploadArchive
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - codedeploy:CreateDeployment
+                - codedeploy:GetApplicationRevision
+                - codedeploy:GetDeployment
+                - codedeploy:GetDeploymentConfig
+                - codedeploy:RegisterApplicationRevision
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - elasticbeanstalk:*
+                - ec2:*
+                - elasticloadbalancing:*
+                - autoscaling:*
+                - cloudwatch:*
+                - s3:*
+                - sns:*
+                - cloudformation:*
+                - rds:*
+                - sqs:*
+                - ecs:*
+                - iam:PassRole
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - lambda:InvokeFunction
+                - lambda:ListFunctions
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - opsworks:CreateDeployment
+                - opsworks:DescribeApps
+                - opsworks:DescribeCommands
+                - opsworks:DescribeDeployments
+                - opsworks:DescribeInstances
+                - opsworks:DescribeStacks
+                - opsworks:UpdateApp
+                - opsworks:UpdateStack
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - cloudformation:CreateStack
+                - cloudformation:DeleteStack
+                - cloudformation:DescribeStacks
+                - cloudformation:UpdateStack
+                - cloudformation:CreateChangeSet
+                - cloudformation:DeleteChangeSet
+                - cloudformation:DescribeChangeSet
+                - cloudformation:ExecuteChangeSet
+                - cloudformation:SetStackPolicy
+                - cloudformation:ValidateTemplate
+                - iam:PassRole
+                Effect: Allow
+                Resource: '*'
+              - Action:
+                - codebuild:BatchGetBuilds
+                - codebuild:BatchGetBuilds
+                - codebuild:StartBuild
+                Effect: Allow
+                Resource: '*'
+      RoleName: !Sub '${AWS::StackName}-${AWS::Region}-pipeline'
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'codepipeline-${AWS::Region}-${AWS::AccountId}'
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 14
+            Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicPolicy: true
+  Build:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Name: !Ref AWS::StackName
+        Packaging: NONE
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ENV
+            Type: PLAINTEXT
+            Value: !Sub '${Env}${SubEnv}'
+          - Name: STACK_NAME
+            Type: PLAINTEXT
+            Value: !Ref AWS::StackName
+        Image: aws/codebuild/nodejs:6.3.1
+        Type: LINUX_CONTAINER
+      Name: !Ref AWS::StackName
+      ServiceRole: !GetAtt BuildRole.Arn
+      Source:
+        Type: CODEPIPELINE
+      Tags:
+        - Key: 'env'
+          Value: !Ref Env
+        - Key: 'sub-env'
+          Value: !Ref SubEnv
+    DependsOn:
+      - BuildRole
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Location: !Sub 'codepipeline-${AWS::Region}-${AWS::AccountId}'
+        Type: S3
+      Name: !Ref AWS::StackName
+      RoleArn: !GetAtt PipelineRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: 1
+              Configuration:
+                Branch: !Ref GitHubBranch
+                OAuthToken: !Ref GitHubToken
+                Owner: !Ref GitHubRepoOwner
+                PollForSourceChanges: true
+                Repo: !Ref GitHubRepo
+              Name: Source
+              OutputArtifacts:
+                - Name: !Sub '${AWS::StackName}Source'
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: 1
+              Configuration:
+                ProjectName: !Ref Build
+              InputArtifacts:
+                - Name: !Sub '${AWS::StackName}Source'
+              Name: CodeBuild
+              OutputArtifacts:
+                - Name: !Sub '${AWS::StackName}CodeBuild'
+              RunOrder: 1
+        - Name: Prod
+          Actions:
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: 1
+              Configuration:
+                ActionMode: CHANGE_SET_REPLACE
+                Capabilities: CAPABILITY_IAM
+                ChangeSetName: Deploy
+                RoleArn: !GetAtt CloudFormationRole.Arn
+                StackName: !Sub '${AWS::StackName}-deployed'
+                TemplateConfiguration: !Sub '${AWS::StackName}CodeBuild::${PackagedTemplateConfigPath}'
+                TemplatePath: !Sub '${AWS::StackName}CodeBuild::${PackagedTemplatePath}'
+              InputArtifacts:
+                - Name: !Sub '${AWS::StackName}CodeBuild'
+              Name: PrepCloudFormation
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: 1
+              Configuration:
+                ActionMode: CHANGE_SET_EXECUTE
+                ChangeSetName: Deploy
+                StackName: !Sub '${AWS::StackName}-deployed'
+              Name: DeployCloudFormation
+              RunOrder: 2
+        - !If
+          - HasCustom
+          - Name: ProdCustom
+            Actions:
+              - ActionTypeId:
+                  Category: Deploy
+                  Owner: AWS
+                  Provider: CloudFormation
+                  Version: 1
+                Configuration:
+                  ActionMode: CHANGE_SET_REPLACE
+                  Capabilities: CAPABILITY_NAMED_IAM
+                  ChangeSetName: DeployCustom
+                  RoleArn: !GetAtt CloudFormationRole.Arn
+                  StackName: !Sub '${AWS::StackName}-custom'
+                  TemplateConfiguration: !If
+                    - HasCustomConfig
+                    - !Sub '${AWS::StackName}CodeBuild::${CustomCFTemplateConfig}'
+                    - !Ref AWS::NoValue
+                  TemplatePath: !Sub '${AWS::StackName}CodeBuild::${CustomCFTemplate}'
+                InputArtifacts:
+                  - Name: !Sub '${AWS::StackName}CodeBuild'
+                Name: PrepCloudFormation
+                RunOrder: 1
+              - ActionTypeId:
+                  Category: Deploy
+                  Owner: AWS
+                  Provider: CloudFormation
+                  Version: 1
+                Configuration:
+                  ActionMode: CHANGE_SET_EXECUTE
+                  ChangeSetName: DeployCustom
+                  StackName: !Sub '${AWS::StackName}-custom'
+                Name: DeployCloudFormation
+                RunOrder: 2
+          - !Ref AWS::NoValue
+    DependsOn:
+      - Build
+      - CloudFormationRole
+      - PipelineRole
+  BuildLogRetention:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/codebuild/${Build}'
+      RetentionInDays: 7
+Outputs:
+  LambdaStackName:
+    Description: The StackName of the stack created to spin up the Lambda function.
+    Value: !Sub '${AWS::StackName}-deployed'
+  Pipeline:
+    Description: The ARN of the pipeline that was created.
+    Value: !Ref Pipeline

@@ -1,9 +1,9 @@
 const assert = require('assert'),
       context = require('aws-lambda-mock-context'),
       fs = require('fs'),
-      generator = require('../../app/apidoc-swagger-generator');
+      generator = require('../../app/handlers');
 
-describe('apidoc-swagger-generator', function() {
+describe('apibuilder-swagger-generator', function() {
   describe('example files', function() {
     const serviceSourceDir = 'test/resources/service';
     const swaggerSourceDir = 'test/resources/swagger';
@@ -21,7 +21,7 @@ describe('apidoc-swagger-generator', function() {
 
 function translateServiceJson(serviceJson, callback) {
   var ctx = newContext();
-  generator.handler({body: JSON.stringify({"service": serviceJson})}, ctx);
+  generator.invocationsHandler({body: JSON.stringify({"service": serviceJson})}, ctx);
   return ctx.Promise
   .then(function(results) {
     assert.equal(results.statusCode, 200);

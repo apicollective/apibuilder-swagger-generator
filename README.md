@@ -1,10 +1,10 @@
-# apidoc-swagger-generator
+# apibuilder-swagger-generator
 
-A Lambda function that translates from the Apidoc service.json to a JSON document that adheres to Swagger Spec 2.0
+A Lambda function that translates from the Apibuilder service.json to a JSON document that adheres to Swagger Spec 2.0
 
 ## Testing
 
-There are some unit tests that rely on service.json from from existing APIs hosted in Apidoc. These can be refreshed
+There are some unit tests that rely on service.json from from existing APIs hosted in Apibuilder. These can be refreshed
 by running
 
   ```
@@ -23,3 +23,6 @@ For the .json files that contain the Swagger output, it is a manual process to:
   4. Verify that the resultant Swagger definition properly reflects the original service.json
 
 Due to #4, this process isn't automated.
+
+## Deployment
+This is deployed using [cloud-formation/pipeline.yml], tied to master. Any merges to master should trigger a new deployment through this pipeline.
