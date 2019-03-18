@@ -10,6 +10,8 @@ exports.generatorsHandler = function(event, context, callback) {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify([{
+          "attributes": [],
+          "key": "swagger",
           "name": "Swagger",
           "description": "Swagger 2.0 Export of the API spec",
         }]) 
