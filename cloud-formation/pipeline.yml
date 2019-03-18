@@ -278,6 +278,9 @@ Resources:
           - Name: STACK_NAME
             Type: PLAINTEXT
             Value: !Ref AWS::StackName
+          - Name: ARTIFACT_BUCKET
+            Type: PLAINTEXT
+            Value: !Ref ArtifactBucket
         Image: aws/codebuild/nodejs:6.3.1
         Type: LINUX_CONTAINER
       Name: !Ref AWS::StackName

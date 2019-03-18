@@ -10,7 +10,7 @@ phases:
       - find ./node_modules -mtime +10950 -exec touch {} \;
       - aws cloudformation package
           --template-file ./cloud-formation/sam.yml
-          --s3-bucket com.getbright.packages
+          --s3-bucket $ARTIFACT_BUCKET
           --s3-prefix apibuilder-code-generator
           --output-template-file sam-packaged.yml
       - echo "{\"Parameters\":{\"Env\":\"$ENV\"}}" > sam-packaged-config.json
