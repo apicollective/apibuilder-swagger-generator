@@ -3,15 +3,16 @@ const Url = require('url');
 exports.generatorsHandler = function(event, context, callback) {
   try {
     const key = event.pathParameters ? event.pathParameters.key : null
-    if (key !== 'swagger') {
+    const isSingle = (key !== null && key !== undefined)
+    if (key !== 'swagger' && isSingle) {
       callback(null, { statusCode: 404 })
     } else {
       callback(null, {
         statusCode: 200,
-        body: JSON.stringify({
+        body: JSON.stringify([{
           "name": "Swagger",
           "description": "Swagger 2.0 Export of the API spec",
-        }) 
+        }]) 
       })
     }
   } catch (e) {
